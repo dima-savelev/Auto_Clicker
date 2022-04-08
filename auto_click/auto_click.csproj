@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Notification.Wpf" Version="6.1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
 

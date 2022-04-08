@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Windows.Interop;
 using System.Threading;
 using System.IO;
+using Notification.Wpf;
 
 namespace auto_click
 {
@@ -67,6 +68,7 @@ namespace auto_click
             timer.Start();
             _start = true;
             _stop = false;
+            Notification.Start();
 
         }
         private static void timer_Tick(object sender, EventArgs e)
@@ -85,6 +87,7 @@ namespace auto_click
             timer.Stop();
             _start = false;
             _stop = true;
+            Notification.Stop();
         }
         static void KeyPress_OnKeyPress(KeyPress.Key Key)
         {
@@ -97,6 +100,7 @@ namespace auto_click
                 timer.Stop();
                 _start = false;
                 _stop = true;
+                Notification.Stop();
             }
             if (Key == KeyPress.Key.F6)
             {
@@ -110,6 +114,7 @@ namespace auto_click
                     timer.Start();
                     _start = true;
                     _stop = false;
+                    App.Current.Dispatcher.Invoke(() => { Notification.Start(); });
                 }
             }
         }
@@ -126,7 +131,7 @@ namespace auto_click
             }
             Interval interval = new Interval();
             interval.ShowDialog();
-            using (StreamWriter save = new StreamWriter("config.ini"))
+            using (StreamWriter save = new StreamWriter(@$"C:\Users\{Environment.UserName}\AppData\Roaming\Auto_Clicker\config.ini"))
             {
                 save.WriteLine(TimeIntertval.Milliseconds);
                 save.WriteLine(TimeIntertval.Seconds);
@@ -137,9 +142,13 @@ namespace auto_click
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (!Directory.Exists(@$"C:\Users\{Environment.UserName}\AppData\Roaming\Auto_Clicker"))
+            {
+                Directory.CreateDirectory(@$"C:\Users\{Environment.UserName}\AppData\Roaming\Auto_Clicker");
+            }
             try
             {
-                using (StreamReader open = new StreamReader("config.ini"))
+                using (StreamReader open = new StreamReader(@$"C:\Users\{Environment.UserName}\AppData\Roaming\Auto_Clicker\config.ini"))
                 {
                     TimeIntertval.Milliseconds = Convert.ToInt32(open.ReadLine());
                     TimeIntertval.Seconds = Convert.ToInt32(open.ReadLine());
